@@ -1,0 +1,1003 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.4 system-ui,-apple-system,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style><title>Steven Orona Projects</title><meta name="description" content="Engineering portfolio of Steven Orona: embedded systems, PCB design, power electronics, controls, and robotics projects."><meta property="og:title" content="Steven Orona Projects"><meta property="og:description" content="Embedded systems, PCB design, power electronics, controls, and robotics projects."><meta property="og:type" content="website"></head><body>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style id="page-style">
+/* Layout: an engineering drawing sheet — title block header, projects as reference-designated parts; each part opens its own sheet with schematic + 3D viewer */
+:root{
+  --paper:#f3f5f4; --sheet:#fbfcfb; --ink:#14212b; --muted:#56656f; --rule:#c9d2d0;
+  --copper:#b8612a; --mask:#1f5c4a; --grid:rgba(20,33,43,.05); --edit:rgba(184,97,42,.08);
+  --stage:#e9eeed; --model:#8d9ca4;
+  --f-display:"Big Shoulders Display","Arial Narrow",sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0e1519; --sheet:#141d22; --ink:#e4ebe9; --muted:#93a3a8; --rule:#2b3a40;
+  --copper:#e08a4f; --mask:#5fb595; --grid:rgba(228,235,233,.04); --edit:rgba(224,138,79,.10);
+  --stage:#10181c; --model:#a6b5ba; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0e1519; --sheet:#141d22; --ink:#e4ebe9; --muted:#93a3a8; --rule:#2b3a40;
+  --copper:#e08a4f; --mask:#5fb595; --grid:rgba(228,235,233,.04); --edit:rgba(224,138,79,.10);
+  --stage:#10181c; --model:#a6b5ba; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px}
+.wrap{max-width:1080px;margin:0 auto;padding-block:40px 96px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:40px}
+
+header.title{border:1.5px solid var(--ink);background:var(--sheet);display:grid;grid-template-columns:1fr auto}
+.name{padding:24px 28px;border-right:1.5px solid var(--ink);min-width:0}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--f-display);font-weight:800;font-size:clamp(48px,9vw,96px);line-height:.9;margin:8px 0 14px;letter-spacing:.01em;text-transform:uppercase;text-wrap:balance}
+h1 .last{color:var(--copper)}
+.lede{margin:0;max-width:58ch;color:var(--muted)}
+.meta{display:grid;grid-template-rows:repeat(4,1fr);font-family:var(--f-mono);font-size:13px;min-width:220px}
+.meta div{padding:10px 18px;border-bottom:1px solid var(--rule);display:flex;flex-direction:column;justify-content:center;min-width:0}
+.meta div:last-child{border-bottom:0}
+.meta b{font-weight:500;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.meta span{font-variant-numeric:tabular-nums}
+
+.projects{display:flex;flex-direction:column;gap:20px}
+.bar{display:flex;flex-direction:column;gap:14px}
+h2{font-family:var(--f-display);font-weight:600;font-size:32px;text-transform:uppercase;margin:0;letter-spacing:.02em}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+button,.btn{font-family:var(--f-mono);font-size:13px;padding:7px 14px;border:1px solid var(--rule);background:var(--sheet);color:var(--ink);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;line-height:1.3}
+button:hover,.btn:hover{border-color:var(--ink)}
+button:disabled{opacity:.4;cursor:default}
+.filters .n{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--sheet);border-color:var(--ink)}
+.filters button[aria-pressed="true"] .n{color:var(--sheet);opacity:.7}
+a:focus-visible,button:focus-visible,.btn:focus-within,[contenteditable]:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--copper);outline-offset:2px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:20px}
+.part{background:var(--sheet);border:1px solid var(--rule);display:flex;flex-direction:column;min-width:0;transition:border-color .15s,transform .15s;color:inherit;text-decoration:none}
+a.part:hover{border-color:var(--ink)}
+a.part:hover .go{color:var(--copper);transform:translateX(3px)}
+.part-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px dashed var(--rule);font-family:var(--f-mono);font-size:12px}
+.ref{font-weight:500;color:var(--copper);letter-spacing:.05em}
+.sys{color:var(--muted);text-transform:uppercase;letter-spacing:.1em;text-align:right}
+.part-body{padding:18px 18px 20px;display:flex;flex-direction:column;gap:12px;flex:1}
+h3{font-family:var(--f-display);font-weight:600;font-size:28px;line-height:1;margin:0;text-transform:uppercase;text-wrap:balance}
+.part p{margin:0;color:var(--muted);font-size:15px}
+.specs{list-style:none;margin:auto 0 0;padding:12px 0 0;border-top:1px solid var(--rule);display:flex;flex-wrap:wrap;gap:6px}
+.specs li{font-family:var(--f-mono);font-size:12px;padding:3px 8px;border:1px solid var(--rule)}
+.part-foot{display:flex;align-items:center;gap:8px;padding:10px 18px;border-top:1px dashed var(--rule);font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.part-foot .files{display:flex;gap:6px;margin-right:auto}
+.badge{font-size:10px;letter-spacing:.08em;padding:2px 6px;border:1px solid var(--mask);color:var(--mask)}
+.go{transition:transform .15s,color .15s;margin-left:auto}
+.empty{grid-column:1/-1;font-family:var(--f-mono);font-size:13px;color:var(--muted);padding:32px;border:1px dashed var(--rule);text-align:center}
+
+footer{border-top:1.5px solid var(--ink);padding-top:16px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+footer .contact{color:var(--ink)}
+
+/* Project sheet */
+.crumbs{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-family:var(--f-mono);font-size:13px}
+.crumbs a{color:var(--ink);text-decoration:none}
+.crumbs a:hover{color:var(--copper)}
+.crumbs .pos{color:var(--muted);font-variant-numeric:tabular-nums}
+.dhead{border:1.5px solid var(--ink);background:var(--sheet);display:grid;grid-template-columns:1fr 260px}
+.dhead .main{padding:24px 28px;border-right:1.5px solid var(--ink);display:flex;flex-direction:column;gap:12px;min-width:0}
+.dhead .eyebrow{display:flex;gap:14px;flex-wrap:wrap}
+.dhead .eyebrow .ref{color:var(--copper)}
+.dhead h1{font-size:clamp(40px,7vw,72px);margin:0}
+.dhead .specs{margin:4px 0 0;padding:0;border:0}
+.dmeta{display:flex;flex-direction:column;font-family:var(--f-mono);font-size:13px;min-width:0}
+.dmeta div{padding:12px 18px;border-bottom:1px solid var(--rule);display:flex;flex-direction:column;gap:2px;min-width:0}
+.dmeta div:last-child{border-bottom:0;flex:1}
+.dmeta b{font-weight:500;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.dmeta a{color:var(--ink);overflow-wrap:anywhere}
+.dmeta a:hover{color:var(--copper)}
+
+.viewer{border:1px solid var(--rule);background:var(--sheet);display:flex;flex-direction:column;min-width:0}
+.vbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:stretch;border-bottom:1px solid var(--rule)}
+.vtabs{display:flex}
+.vtabs button{border:0;border-right:1px solid var(--rule);padding:12px 18px;background:transparent;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-size:12px}
+.vtabs button[aria-selected="true"]{color:var(--ink);background:var(--sheet);box-shadow:inset 0 -2px 0 var(--copper)}
+.vtools{display:flex;gap:6px;align-items:center;padding:8px 12px;flex-wrap:wrap}
+.vtools button,.vtools .btn{padding:5px 10px;font-size:12px}
+.stage{position:relative;background:var(--stage);height:min(64vh,560px);min-height:320px;overflow:auto}
+.stage.model{overflow:hidden;touch-action:none}
+.stage canvas{display:block}
+.stage .img-wrap{min-height:100%;display:flex;align-items:flex-start;justify-content:center;padding:16px}
+.stage img{background:#fff;max-width:none;display:block}
+.stage .pages{display:flex;flex-direction:column;align-items:center;gap:16px;padding:16px}
+.stage .pages canvas{background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.stage-msg{position:absolute;inset:0;display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center;text-align:center;padding:24px;font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.stage-msg strong{font-family:var(--f-display);font-size:24px;font-weight:600;text-transform:uppercase;color:var(--ink)}
+.hint{position:absolute;left:12px;bottom:10px;font-family:var(--f-mono);font-size:11px;color:var(--muted);pointer-events:none}
+.vfoot{padding:8px 14px;border-top:1px solid var(--rule);font-family:var(--f-mono);font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.vfoot a{color:var(--ink)}
+
+.writeup{display:grid;grid-template-columns:200px 1fr;gap:24px;border-top:1.5px solid var(--ink);padding-top:20px}
+.writeup h2{font-size:26px}
+.prose{display:flex;flex-direction:column;gap:14px;max-width:68ch;min-width:0}
+.prose p{margin:0}
+.prose .lead{font-size:18px;color:var(--ink)}
+.prose .more{color:var(--muted)}
+.pn{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.pn a{display:flex;flex-direction:column;gap:4px;padding:14px 18px;border:1px solid var(--rule);background:var(--sheet);color:var(--ink);text-decoration:none;min-width:0}
+.pn a:hover{border-color:var(--ink)}
+.pn a.next{text-align:right;grid-column:2}
+.pn small{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.pn span{font-family:var(--f-display);font-size:22px;font-weight:600;text-transform:uppercase;line-height:1.05}
+
+/* Edit mode */
+.editing [contenteditable="true"]{background:var(--edit);outline:1px dashed var(--copper);outline-offset:2px;cursor:text;min-width:2ch;display:inline-block}
+.editing .lede[contenteditable],.editing .part p[contenteditable]{display:block}
+.field-label{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.field{display:flex;flex-direction:column;gap:4px}
+.editing textarea,.tag-input{font-family:var(--f-body);font-size:15px;line-height:1.55;padding:10px 12px;border:1px dashed var(--copper);background:var(--edit);color:var(--ink);width:100%;min-width:0;resize:vertical}
+.tag-input{font-family:var(--f-mono);font-size:12px;padding:5px 8px;border-style:solid;border-color:var(--rule);background:var(--paper)}
+.tabs-edit{display:flex;flex-direction:column;gap:8px;padding:14px;border:1px dashed var(--copper);background:var(--edit)}
+.tab-rows{display:flex;flex-wrap:wrap;gap:8px}
+.tab-row{display:flex;align-items:stretch;border:1px solid var(--rule);background:var(--sheet)}
+.tab-row input{font-family:var(--f-mono);font-size:13px;padding:6px 8px;border:0;background:transparent;color:var(--ink);width:15ch;min-width:0}
+.tab-row button{border:0;border-left:1px solid var(--rule);padding:4px 10px;color:var(--copper)}
+.tab-add{border-style:dashed;color:var(--muted)}
+.part-tools{display:flex;flex-direction:column;gap:8px;padding:12px 18px;border-top:1px dashed var(--rule);font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.checks{display:flex;flex-wrap:wrap;gap:6px 12px}
+.checks label{display:inline-flex;gap:5px;align-items:center;color:var(--ink);cursor:pointer}
+.tool-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.part-tools button{padding:5px 10px;font-size:12px}
+.del{color:var(--copper)}
+.part-tools .del{margin-left:auto}
+.add{border-style:dashed;justify-content:center;align-items:center;min-height:160px;font-size:14px;color:var(--muted);background:transparent}
+.btn input[type=file]{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.btn.primary,.toolbar .primary{background:var(--copper);color:#fff;border-color:var(--copper)}
+.owner-note{font-family:var(--f-mono);font-size:12px;color:var(--muted);border:1px dashed var(--rule);padding:10px 14px}
+
+.toolbar{position:fixed;right:0;bottom:0;display:flex;gap:8px;align-items:center;
+  padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) 16px;z-index:5}
+.toolbar button{box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.status{font-family:var(--f-mono);font-size:12px;color:var(--muted);background:var(--sheet);padding:6px 10px;border:1px solid var(--rule)}
+
+@media (max-width:760px){
+  header.title,.dhead{grid-template-columns:1fr}
+  .name,.dhead .main{border-right:0;border-bottom:1.5px solid var(--ink);padding:20px}
+  .meta{grid-template-rows:none;grid-template-columns:1fr 1fr;min-width:0}
+  .meta div:nth-child(odd){border-right:1px solid var(--rule)}
+  .meta div:nth-last-child(-n+2){border-bottom:0}
+  .grid{grid-template-columns:1fr}
+  .writeup{grid-template-columns:1fr;gap:12px}
+  .pn{grid-template-columns:1fr}
+  .pn a.next{grid-column:1}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div id="root"></div>
+
+<script type="application/json" id="state">
+{
+  "eyebrow": "Engineering portfolio",
+  "first": "Steven",
+  "last": "Orona",
+  "lede": "I design embedded systems, custom circuit boards, and closed-loop controls. Here you'll find the hardware I've built, the firmware I've written, and machines that sense and act on their own.",
+  "meta": [
+    {
+      "label": "Focus",
+      "value": "Embedded · Hardware · Controls"
+    },
+    {
+      "label": "Areas",
+      "value": "auto:areas"
+    },
+    {
+      "label": "Projects",
+      "value": "auto:projects"
+    },
+    {
+      "label": "Updated",
+      "value": "2026-10"
+    }
+  ],
+  "heading": "Projects",
+  "cats": [
+    {
+      "id": "embedded",
+      "label": "Embedded Systems"
+    },
+    {
+      "id": "pcb",
+      "label": "PCB Design"
+    },
+    {
+      "id": "power",
+      "label": "Power Electronics"
+    },
+    {
+      "id": "controls",
+      "label": "Controls"
+    },
+    {
+      "id": "robotics",
+      "label": "Robotics & Autonomy"
+    },
+    {
+      "id": "automotive",
+      "label": "Automotive"
+    }
+  ],
+  "projects": [
+    {
+      "id": "pdm1",
+      "cats": [
+        "power",
+        "pcb",
+        "embedded",
+        "automotive"
+      ],
+      "ref": "PDM1",
+      "sys": "Formula SAE · Power",
+      "title": "Power Distribution Module",
+      "desc": "Distributes and protects low-voltage power throughout the race car. Integrates individually controlled power channels with current monitoring and fault detection, enabling reliable power management, subsystem protection, and simplified electrical diagnostics.",
+      "tags": [
+        "Power electronics",
+        "PCB design",
+        "Current sensing",
+        "CAN"
+      ],
+      "details": "",
+      "links": [],
+      "schematic": {
+        "id": "assets/pdm1-schematic.pdf",
+        "type": "pdf",
+        "name": "Sheet1.pdf"
+      },
+      "model": {
+        "id": "assets/pdm1-model.glb",
+        "format": "glb",
+        "name": "STEP_[No Variations] for PCB1.PcbDoc(1).step",
+        "up": "z",
+        "from": "step"
+      }
+    },
+    {
+      "id": "sw1",
+      "cats": [
+        "pcb",
+        "embedded",
+        "automotive"
+      ],
+      "ref": "SW1",
+      "sys": "Formula SAE · Driver interface",
+      "title": "Steering Wheel PCB",
+      "desc": "Custom board built into the steering wheel. Reads the shift paddles, buttons, and clutch input, drives the driver display, and reports everything to the car over CAN.",
+      "tags": [
+        "PCB design",
+        "Human interface",
+        "Display",
+        "CAN"
+      ],
+      "details": "",
+      "links": [],
+      "schematic": null,
+      "model": null
+    },
+    {
+      "id": "u1",
+      "cats": [
+        "embedded",
+        "controls",
+        "automotive"
+      ],
+      "ref": "U1",
+      "sys": "Formula SAE · Vehicle control",
+      "title": "Control Board",
+      "desc": "Main vehicle controller. Runs the electronic shift logic, fires the pneumatic shift solenoids, drives the clutch servo, and ties the car's sensors and boards together on the CAN bus.",
+      "tags": [
+        "Embedded C++",
+        "Solenoid drivers",
+        "Servo control",
+        "CAN"
+      ],
+      "details": "",
+      "links": [],
+      "schematic": null,
+      "model": null
+    },
+    {
+      "id": "av1",
+      "cats": [
+        "robotics",
+        "controls",
+        "embedded"
+      ],
+      "ref": "AV1",
+      "sys": "Mobile robot",
+      "title": "Autonomous Perception Vehicle",
+      "desc": "A ground vehicle that senses its surroundings and navigates on its own. PID loops hold speed and heading while the perception system decides where to go.",
+      "tags": [
+        "PID control",
+        "Sensor fusion",
+        "Perception",
+        "Motor control"
+      ],
+      "details": "",
+      "links": [],
+      "schematic": null,
+      "model": null
+    },
+    {
+      "id": "ta1",
+      "cats": [
+        "robotics",
+        "controls"
+      ],
+      "ref": "TA1",
+      "sys": "Vision + actuation",
+      "title": "Autonomous Targeting System",
+      "desc": "Finds a target, tracks it, and aims an actuated mechanism at it without human input. Closes the loop between vision and motion so the system stays locked on as the target moves.",
+      "tags": [
+        "Computer vision",
+        "Tracking",
+        "Actuators",
+        "Closed-loop control"
+      ],
+      "details": "",
+      "links": [],
+      "schematic": null,
+      "model": null
+    }
+  ],
+  "contactLabel": "Contact",
+  "contact": "stevenorona9@gmail.com",
+  "footnote": "Sheet 1 of 1"
+}
+</script>
+
+<script id="app">
+(function(){
+  const root = document.getElementById('root');
+  const slug = s => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'project';
+  const load = () => {
+    const s = JSON.parse(document.getElementById('state').textContent);
+    const used = new Set();
+    s.projects.forEach(p => {
+      if (!p.cats) p.cats = p.cat ? [p.cat] : []; delete p.cat;
+      let id = p.id || slug(p.ref || p.title), base = id, n = 2;
+      while (used.has(id)) id = base + '-' + n++;
+      used.add(id); p.id = id;
+      p.details = p.details || ''; p.links = p.links || [];
+      p.schematic = p.schematic || null; p.model = p.model || null;
+    });
+    return s;
+  };
+  let state = load();
+  let editing = false, filter = 'all', artifactApi = null, assetsApi = null, saving = false;
+  let viewTab = null, viewTabFor = null, cleanup = null, uploading = null;
+  const sessionUploads = [];
+  try { filter = localStorage.getItem('filter') || 'all'; } catch (e) {}
+
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const ed = k => editing ? ` contenteditable="true" spellcheck="true" data-k="${k}"` : '';
+  const pad = n => String(n).padStart(2, '0');
+  const count = id => state.projects.filter(p => p.cats.includes(id)).length;
+  const blob = id => id;
+  const safeUrl = u => /^https?:\/\//i.test(u) ? u : (u && !/^[a-z]+:/i.test(u) ? 'https://' + u : '');
+  const css = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const currentId = () => { const m = location.hash.match(/^#project-([a-z0-9-]+)$/); return m ? m[1] : null; };
+
+  function metaValue(m){
+    if (m.value === 'auto' || m.value === 'auto:projects') return pad(state.projects.length);
+    if (m.value === 'auto:areas') return pad(state.cats.filter(c => count(c.id) > 0).length);
+    return esc(m.value);
+  }
+
+  /* ---------- List view ---------- */
+  function listView(){
+    const s = state;
+    const usedCats = s.cats.filter(c => count(c.id) > 0);
+    if (filter !== 'all' && !usedCats.some(c => c.id === filter)) filter = 'all';
+    const visible = s.projects.map((p, i) => ({p, i})).filter(({p}) => editing || filter === 'all' || p.cats.includes(filter));
+
+    const card = ({p, i}) => {
+      const head = `<div class="part-head"><span class="ref"${ed('p.'+i+'.ref')}>${esc(p.ref)}</span><span class="sys"${ed('p.'+i+'.sys')}>${esc(p.sys)}</span></div>`;
+      const files = [p.schematic ? '<span class="badge">SCHEMATIC</span>' : '', p.model ? '<span class="badge">3D</span>' : ''].join('');
+      if (!editing) return `<a class="part" href="#project-${esc(p.id)}" aria-label="${esc(p.title)}: view details">
+          ${head}
+          <div class="part-body"><h3>${esc(p.title)}</h3><p>${esc(p.desc)}</p>
+            <ul class="specs">${p.tags.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>
+          <div class="part-foot"><span class="files">${files}</span><span class="go">View details →</span></div>
+        </a>`;
+      return `<article class="part">
+          ${head}
+          <div class="part-body">
+            <h3${ed('p.'+i+'.title')}>${esc(p.title)}</h3>
+            <p${ed('p.'+i+'.desc')}>${esc(p.desc)}</p>
+            <div class="field" style="margin-top:auto"><label class="field-label" for="tags-${i}">Skill tags, separated by commas</label><input class="tag-input" id="tags-${i}" data-tags="${i}" value="${esc(p.tags.join(', '))}"></div>
+          </div>
+          <div class="part-tools">
+            <span class="field-label">Show under tabs</span>
+            <div class="checks">${s.cats.map(c => `<label><input type="checkbox" id="pc-${i}-${esc(c.id)}" data-pc="${i}" value="${esc(c.id)}"${p.cats.includes(c.id) ? ' checked' : ''}>${esc(c.label)}</label>`).join('')}</div>
+            <div class="tool-row">
+              <button data-move="${i}" data-dir="-1" aria-label="Move earlier"${i===0?' disabled':''}>←</button>
+              <button data-move="${i}" data-dir="1" aria-label="Move later"${i===s.projects.length-1?' disabled':''}>→</button>
+              <a class="btn" href="#project-${esc(p.id)}">Edit details, schematic &amp; 3D →</a>
+              <button class="del" data-del="${i}">Remove</button>
+            </div>
+          </div>
+        </article>`;
+    };
+
+    const filters = editing
+      ? `<div class="tabs-edit">
+          <span class="field-label">Tabs: rename, remove, or add. Tabs with no projects stay hidden from visitors.</span>
+          <div class="tab-rows">
+            ${s.cats.map((c, ci) => `<div class="tab-row"><input id="cat-${esc(c.id)}" data-catlabel="${ci}" value="${esc(c.label)}" aria-label="Tab name"><button data-catdel="${ci}" aria-label="Remove tab ${esc(c.label)}">×</button></div>`).join('')}
+            <button class="tab-add" id="add-tab">+ Add tab</button>
+          </div>
+        </div>`
+      : `<div class="filters" role="group" aria-label="Filter projects">
+          <button id="f-all" data-f="all" aria-pressed="${filter==='all'}">All <span class="n">${pad(s.projects.length)}</span></button>
+          ${usedCats.map(c => `<button id="f-${esc(c.id)}" data-f="${esc(c.id)}" aria-pressed="${filter===c.id}">${esc(c.label)} <span class="n">${pad(count(c.id))}</span></button>`).join('')}
+        </div>`;
+
+    return `
+      <header class="title">
+        <div class="name">
+          <div class="eyebrow"${ed('eyebrow')}>${esc(s.eyebrow)}</div>
+          <h1><span${ed('first')}>${esc(s.first)}</span> <span class="last"${ed('last')}>${esc(s.last)}</span></h1>
+          <p class="lede"${ed('lede')}>${esc(s.lede)}</p>
+        </div>
+        <div class="meta">${s.meta.map((m, i) => `<div><b${ed('m.'+i+'.label')}>${esc(m.label)}</b><span${String(m.value).startsWith('auto') ? '' : ed('m.'+i+'.value')}>${metaValue(m)}</span></div>`).join('')}</div>
+      </header>
+      <section class="projects" aria-labelledby="projects-h">
+        <div class="bar"><h2 id="projects-h"${ed('heading')}>${esc(s.heading)}</h2>${filters}</div>
+        <div class="grid">${visible.map(card).join('') || '<div class="empty">No projects under this tab yet.</div>'}${editing ? `<button class="part add" id="add-project">+ Add project</button>` : ''}</div>
+      </section>`;
+  }
+
+  /* ---------- Project sheet ---------- */
+  function detailView(i){
+    const s = state, p = s.projects[i];
+    const prev = s.projects[i - 1], next = s.projects[i + 1];
+    const catLabels = p.cats.map(id => (s.cats.find(c => c.id === id) || {}).label).filter(Boolean);
+    const avail = editing ? ['schematic', 'model'] : ['schematic', 'model'].filter(k => p[k]);
+    if (viewTabFor !== p.id || !avail.includes(viewTab)) { viewTab = avail[0] || null; viewTabFor = p.id; }
+    const paras = p.details.split(/\n\s*\n/).map(t => t.trim()).filter(Boolean);
+    const links = p.links.filter(l => safeUrl(l.url));
+
+    const tabBtn = (k, label) => `<button role="tab" id="vt-${k}" data-vtab="${k}" aria-selected="${viewTab===k}">${label}${editing && !p[k] ? ' · empty' : ''}</button>`;
+    let tools = '';
+    if (viewTab === 'schematic' && p.schematic) {
+      tools = `<button data-zoom="-1" aria-label="Zoom out">−</button><button data-zoom="0">Fit</button><button data-zoom="1" aria-label="Zoom in">+</button>`;
+    } else if (viewTab === 'model' && p.model) {
+      tools = `<button id="m-reset">Reset view</button><button id="m-rotate">Rotate 90°</button>`;
+    }
+    if (editing && viewTab && assetsApi) {
+      const accept = viewTab === 'schematic' ? '.png,.jpg,.jpeg,.gif,.webp,.svg,.pdf,image/*,application/pdf' : '.step,.stp,.stl,.obj,.glb';
+      tools += `<label class="btn primary">${p[viewTab] ? 'Replace file' : 'Upload file'}<input type="file" id="up-${viewTab}" data-upload="${viewTab}" data-i="${i}" accept="${accept}"></label>`;
+      if (p[viewTab]) tools += `<button class="del" data-remove="${viewTab}" data-i="${i}">Remove</button>`;
+    }
+
+    const fileInfo = viewTab && p[viewTab]
+      ? `<div class="vfoot"><span>${esc(p[viewTab].name || '')}</span>${viewTab === 'schematic' ? `<a href="${blob(p.schematic.id)}" target="_blank" rel="noopener">Open full size ↗</a>` : '<span>Drag to rotate · scroll to zoom · right-drag to pan</span>'}</div>` : '';
+
+    const viewer = viewTab ? `<section class="viewer" aria-label="Project files">
+        <div class="vbar"><div class="vtabs" role="tablist">${avail.includes('schematic') ? tabBtn('schematic', 'Schematic') : ''}${avail.includes('model') ? tabBtn('model', '3D model') : ''}</div><div class="vtools">${tools}</div></div>
+        <div class="stage${viewTab === 'model' ? ' model' : ''}" id="stage" role="tabpanel"></div>
+        ${fileInfo}
+      </section>` : '';
+
+    const ownerNote = !editing && artifactApi && !p.schematic && !p.model
+      ? `<div class="owner-note">Only you see this: click <b>Edit page</b> to upload a schematic and a 3D model for this project.</div>` : '';
+
+    const linksBlock = editing
+      ? `<div class="field"><label class="field-label" for="links-${i}">Links, one per line as  Label | https://…</label><textarea id="links-${i}" data-links="${i}" rows="3" placeholder="GitHub | https://github.com/you/repo">${esc(p.links.map(l => (l.label ? l.label + ' | ' : '') + l.url).join('\n'))}</textarea></div>`
+      : '';
+
+    return `
+      <nav class="crumbs" aria-label="Project navigation"><a href="#" id="back">← All projects</a><span class="pos">${pad(i + 1)} / ${pad(s.projects.length)}</span></nav>
+      <header class="dhead">
+        <div class="main">
+          <div class="eyebrow"><span class="ref"${ed('p.'+i+'.ref')}>${esc(p.ref)}</span><span${ed('p.'+i+'.sys')}>${esc(p.sys)}</span></div>
+          <h1${ed('p.'+i+'.title')}>${esc(p.title)}</h1>
+          <p class="lede"${ed('p.'+i+'.desc')}>${esc(p.desc)}</p>
+          ${editing ? `<div class="field"><label class="field-label" for="tags-${i}">Skill tags, separated by commas</label><input class="tag-input" id="tags-${i}" data-tags="${i}" value="${esc(p.tags.join(', '))}"></div>`
+                    : `<ul class="specs">${p.tags.map(t => `<li>${esc(t)}</li>`).join('')}</ul>`}
+        </div>
+        <div class="dmeta">
+          <div><b>Areas</b><span>${catLabels.length ? catLabels.map(esc).join(' · ') : '—'}</span></div>
+          <div><b>Files</b><span>${[p.schematic ? 'Schematic' : '', p.model ? '3D model' : ''].filter(Boolean).join(' · ') || '—'}</span></div>
+          <div><b>Links</b>${links.length ? links.map(l => `<a href="${esc(safeUrl(l.url))}" target="_blank" rel="noopener">${esc(l.label || l.url)} ↗</a>`).join('') : '<span>—</span>'}</div>
+        </div>
+      </header>
+      ${ownerNote}
+      ${viewer}
+      <section class="writeup" aria-labelledby="overview-h">
+        <h2 id="overview-h">Overview</h2>
+        <div class="prose">
+          ${editing
+            ? `<div class="field"><label class="field-label" for="details-${i}">Detailed write-up. Leave a blank line between paragraphs.</label><textarea id="details-${i}" data-details="${i}" rows="12" placeholder="The problem, your design decisions, how you tested it, results and numbers, what you'd change next time.">${esc(p.details)}</textarea></div>${linksBlock}`
+            : (paras.length ? paras.map(t => `<p class="more">${esc(t)}</p>`).join('') : `<p class="lead">${esc(p.desc)}</p>`)}
+        </div>
+      </section>
+      <nav class="pn" aria-label="More projects">
+        ${prev ? `<a href="#project-${esc(prev.id)}"><small>← Previous</small><span>${esc(prev.title)}</span></a>` : ''}
+        ${next ? `<a class="next" href="#project-${esc(next.id)}"><small>Next →</small><span>${esc(next.title)}</span></a>` : ''}
+      </nav>`;
+  }
+
+  /* ---------- Render ---------- */
+  function render(){
+    if (cleanup) { try { cleanup(); } catch (e) {} cleanup = null; }
+    const id = currentId();
+    const i = id ? state.projects.findIndex(p => p.id === id) : -1;
+    const body = i >= 0 ? detailView(i) : listView();
+    root.innerHTML = `<div class="wrap${editing ? ' editing' : ''}">${body}
+      <footer>
+        <div><span${ed('contactLabel')}>${esc(state.contactLabel)}</span> · <span class="contact"${ed('contact')}>${esc(state.contact)}</span></div>
+        <div${ed('footnote')}>${esc(state.footnote)}</div>
+      </footer>
+    </div>
+    ${artifactApi ? `<div class="toolbar">
+      <span class="status" id="status" hidden></span>
+      ${editing
+        ? `<button id="cancel">Cancel</button><button class="primary" id="save"${saving || uploading ?' disabled':''}>${saving?'Saving…':'Save changes'}</button>`
+        : `<button id="edit">Edit page</button>`}
+    </div>` : ''}`;
+    if (i >= 0) mountStage(state.projects[i]);
+  }
+
+  /* ---------- Stage: schematic + 3D ---------- */
+  const scripts = {};
+  const loadScript = src => scripts[src] || (scripts[src] = new Promise((res, rej) => {
+    const el = document.createElement('script'); el.src = src; el.onload = res;
+    el.onerror = () => { delete scripts[src]; rej(new Error('script')); };
+    document.head.appendChild(el);
+  }));
+  const THREE_BASE = 'https://cdn.jsdelivr.net/npm/three@0.147.0/';
+  const PDF_BASE = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+  let zoom = 1;
+
+  function msg(stage, title, text){
+    stage.innerHTML = `<div class="stage-msg">${title ? `<strong>${esc(title)}</strong>` : ''}<span>${esc(text)}</span></div>`;
+  }
+
+  function mountStage(p){
+    const stage = document.getElementById('stage');
+    if (!stage) return;
+    if (uploading && uploading.kind === viewTab && uploading.id === p.id) { msg(stage, 'Uploading', uploading.text); return; }
+    const f = p[viewTab];
+    if (!f) {
+      if (viewTab === 'schematic') msg(stage, 'No schematic yet', assetsApi ? 'Upload a PNG, JPG, SVG, or PDF export of your schematic (up to 20 MB, SVG up to 2 MB).' : 'File uploads aren’t available in this view.');
+      else msg(stage, 'No 3D model yet', assetsApi ? 'Upload a STEP, STL, OBJ, or GLB file (up to 200 MB). STEP files are converted to a lightweight model when you upload them, and large files are compressed automatically.' : 'File uploads aren’t available in this view.');
+      return;
+    }
+    if (viewTab === 'schematic') mountSchematic(p.schematic, stage);
+    else mountModel(p, stage);
+  }
+
+  function mountSchematic(f, stage){
+    let alive = true; cleanup = () => { alive = false; };
+    if (f.type === 'pdf') {
+      msg(stage, '', 'Loading schematic…');
+      (async () => {
+        try {
+          await loadScript(PDF_BASE + 'pdf.min.js');
+          await loadScript(PDF_BASE + 'pdf.worker.min.js');
+          const res = await fetch(blob(f.id)); if (!res.ok) throw new Error('missing');
+          const data = new Uint8Array(await res.arrayBuffer());
+          const doc = await window.pdfjsLib.getDocument({data, isEvalSupported: false}).promise;
+          if (!alive) return;
+          const pages = document.createElement('div'); pages.className = 'pages';
+          stage.innerHTML = ''; stage.appendChild(pages);
+          const width = Math.max(280, stage.clientWidth - 32) * zoom;
+          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          for (let n = 1; n <= doc.numPages && alive; n++) {
+            const page = await doc.getPage(n);
+            const base = page.getViewport({scale: 1});
+            const vp = page.getViewport({scale: (width / base.width) * dpr});
+            const c = document.createElement('canvas');
+            c.width = vp.width; c.height = vp.height; c.style.width = (vp.width / dpr) + 'px';
+            pages.appendChild(c);
+            await page.render({canvasContext: c.getContext('2d'), viewport: vp}).promise;
+          }
+        } catch (e) { if (alive) msg(stage, 'Couldn’t show this PDF', 'Use "Open full size" below, or upload the schematic as a PNG instead.'); }
+      })();
+    } else {
+      stage.innerHTML = `<div class="img-wrap"><img id="sch-img" alt="Schematic" src="${blob(f.id)}"></div>`;
+      const img = document.getElementById('sch-img');
+      const size = () => { img.style.width = Math.max(200, (stage.clientWidth - 32) * zoom) + 'px'; };
+      size();
+      img.onerror = () => msg(stage, 'Schematic missing', 'The file couldn’t be loaded. Upload it again in edit mode.');
+    }
+  }
+
+  function decodeB64(text){
+    const bin = atob(text.replace(/\s+/g, ''));
+    const out = new Uint8Array(bin.length);
+    for (let k = 0; k < bin.length; k++) out[k] = bin.charCodeAt(k);
+    return out;
+  }
+
+  async function readModel(f){
+    const r = await fetch(blob(f.id)); if (!r.ok) throw new Error('missing');
+    return new Uint8Array(await r.arrayBuffer());
+  }
+
+  function mountModel(p, stage){
+    const f = p.model;
+    let alive = true, raf = 0, renderer, controls, ro, mq, objRoot;
+    cleanup = () => {
+      alive = false; cancelAnimationFrame(raf);
+      if (ro) ro.disconnect();
+      if (controls) controls.dispose();
+      if (objRoot) objRoot.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.material) [].concat(o.material).forEach(m => m.dispose()); });
+      if (renderer) { renderer.dispose(); renderer.forceContextLoss && renderer.forceContextLoss(); }
+    };
+    msg(stage, '', 'Loading 3D model…');
+    (async () => {
+      try {
+        await loadScript(THREE_BASE + 'build/three.min.js');
+        await loadScript(THREE_BASE + 'examples/js/controls/OrbitControls.js');
+        const loaderFile = {stl: 'STLLoader', obj: 'OBJLoader', glb: 'GLTFLoader'}[f.format];
+        await loadScript(THREE_BASE + 'examples/js/loaders/' + loaderFile + '.js');
+        const bytes = await readModel(f);
+        if (!alive) return;
+        const T = window.THREE;
+        const modelColor = new T.Color(css('--model') || '#8d9ca4');
+        let object;
+        if (f.format === 'stl') {
+          const geom = new T.STLLoader().parse(bytes.buffer);
+          const mat = new T.MeshStandardMaterial({color: modelColor, metalness: .15, roughness: .55, vertexColors: !!geom.hasColors});
+          object = new T.Mesh(geom, mat);
+        } else if (f.format === 'obj') {
+          object = new T.OBJLoader().parse(new TextDecoder().decode(bytes));
+          object.traverse(o => { if (o.isMesh) o.material = new T.MeshStandardMaterial({color: modelColor, metalness: .15, roughness: .55}); });
+        } else {
+          object = await new Promise((ok, bad) => new T.GLTFLoader().parse(bytes.buffer, '', g => ok(g.scene), bad));
+        }
+        if (!alive) return;
+
+        stage.innerHTML = '<span class="hint">Drag to rotate · scroll to zoom</span>';
+        renderer = new T.WebGLRenderer({antialias: true});
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        renderer.outputEncoding = T.sRGBEncoding;
+        stage.prepend(renderer.domElement);
+        const scene = new T.Scene();
+        const camera = new T.PerspectiveCamera(40, 1, .01, 1000);
+        scene.add(camera);
+        scene.add(new T.HemisphereLight(0xffffff, 0x404850, .85));
+        const key = new T.DirectionalLight(0xffffff, .9); key.position.set(1, 1.2, .8); camera.add(key);
+        objRoot = new T.Group(); objRoot.add(object); scene.add(objRoot);
+        const holder = new T.Group(); scene.add(holder);
+        controls = new T.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+
+        let upY = f.up ? f.up === 'y' : f.format === 'glb';
+        let home = null;
+        const fit = () => {
+          objRoot.rotation.set(upY ? 0 : -Math.PI / 2, 0, 0);
+          object.position.set(0, 0, 0); objRoot.updateMatrixWorld(true);
+          const box = new T.Box3().setFromObject(objRoot);
+          const c = box.getCenter(new T.Vector3());
+          object.position.sub(c.applyMatrix4(new T.Matrix4().makeRotationX(-objRoot.rotation.x)));
+          objRoot.updateMatrixWorld(true);
+          const b2 = new T.Box3().setFromObject(objRoot), sz = b2.getSize(new T.Vector3());
+          const r = Math.max(sz.length() / 2, 1e-3);
+          camera.near = r / 100; camera.far = r * 100; camera.updateProjectionMatrix();
+          holder.clear();
+          const g = new T.GridHelper(r * 4, 20, new T.Color(css('--rule')), new T.Color(css('--rule')));
+          g.position.y = b2.min.y; holder.add(g);
+          home = new T.Vector3(r * 1.5, r * 1.1, r * 1.9);
+          camera.position.copy(home); controls.target.set(0, 0, 0); controls.update();
+        };
+        const theme = () => { scene.background = new T.Color(css('--stage') || '#e9eeed'); };
+        theme(); fit();
+
+        const resize = () => {
+          const w = stage.clientWidth, h = stage.clientHeight;
+          if (!w || !h) return;
+          renderer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix();
+        };
+        resize();
+        ro = new ResizeObserver(resize); ro.observe(stage);
+        mq = window.matchMedia('(prefers-color-scheme: dark)');
+        const onTheme = () => { theme(); fit(); };
+        mq.addEventListener && mq.addEventListener('change', onTheme);
+        const prevCleanup = cleanup;
+        cleanup = () => { mq.removeEventListener && mq.removeEventListener('change', onTheme); prevCleanup(); };
+
+        const loop = () => { if (!alive) return; controls.update(); renderer.render(scene, camera); raf = requestAnimationFrame(loop); };
+        loop();
+
+        const reset = document.getElementById('m-reset');
+        if (reset) reset.onclick = () => { camera.position.copy(home); controls.target.set(0, 0, 0); controls.update(); };
+        const rot = document.getElementById('m-rotate');
+        if (rot) rot.onclick = () => { upY = !upY; if (editing) f.up = upY ? 'y' : 'z'; fit(); };
+      } catch (e) {
+        if (!alive) return;
+        const why = String(e && e.message || e);
+        if (why === 'browser') { msg(stage, 'Couldn’t open this model', 'This browser is too old to open the model. Update it or try another browser.'); return; }
+        msg(stage, 'Couldn’t open this model',
+          why === 'script' ? 'The 3D viewer didn’t load. Check your connection and reload the page.'
+          : why === 'missing' ? 'The file couldn’t be found. Upload it again in edit mode.'
+          : 'The file may be compressed or in an unsupported format. Export it as STL, or as GLB without Draco compression.');
+      }
+    })();
+  }
+
+  /* ---------- Uploads ---------- */
+  const IMG_TYPES = {png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', webp: 'image/webp', svg: 'image/svg+xml', pdf: 'application/pdf'};
+  const fileToB64 = file => new Promise((ok, bad) => {
+    const r = new FileReader();
+    r.onload = () => ok(String(r.result).split(',')[1] || '');
+    r.onerror = () => bad(r.error); r.readAsDataURL(file);
+  });
+
+  const MAX_MODEL = 200 * 1024 * 1024, CHUNK = 19 * 1024 * 1024;
+
+  // STEP files are converted to a GLB mesh in the uploader's browser (OpenCascade via occt-import-js),
+  // so visitors only ever download the lightweight mesh.
+  const OCCT_JS = 'https://cdn.jsdelivr.net/npm/occt-import-js@0.0.23/dist/occt-import-js.js';
+  const OCCT_WASM = 'c8334c5e0ac89f37b881a2798f36d3c0';
+  let occtPromise = null;
+  async function stepToGlb(file, progress){
+    progress('Loading the STEP converter (about 8 MB, first time only)…');
+    let occt;
+    try {
+      await loadScript(THREE_BASE + 'build/three.min.js');
+      await loadScript(THREE_BASE + 'examples/js/exporters/GLTFExporter.js');
+      await loadScript(OCCT_JS);
+      if (!occtPromise) occtPromise = (async () => {
+        const r = await fetch(blob(OCCT_WASM)); if (!r.ok) throw new Error('wasm');
+        return window.occtimportjs({wasmBinary: decodeB64(await r.text())});
+      })().catch(e => { occtPromise = null; throw e; });
+      occt = await occtPromise;
+    } catch (e) { throw {code: 'step', message: 'The STEP converter couldn\'t start in this browser. Export the model as GLB or STL instead.'}; }
+    progress('Converting ' + file.name + ' to a 3D mesh. Large assemblies can take a minute…');
+    await new Promise(r => setTimeout(r, 60));
+    let result = null;
+    try { result = occt.ReadStepFile(new Uint8Array(await file.arrayBuffer()), null); } catch (e) {}
+    if (!result || !result.success || !result.meshes || !result.meshes.length) throw {code: 'step', message: 'Couldn\'t read that STEP file. Re-export it as AP214 or AP242 STEP, or as GLB or STL.'};
+    const T = window.THREE, group = new T.Group();
+    const fallback = new T.Color(css('--model') || '#8d9ca4');
+    const rgb = c => new T.Color().setRGB(c[0], c[1], c[2]).convertSRGBToLinear();
+    const mk = c => new T.MeshStandardMaterial({color: c, metalness: .15, roughness: .55});
+    result.meshes.forEach(m => {
+      const g = new T.BufferGeometry();
+      g.setAttribute('position', new T.Float32BufferAttribute(m.attributes.position.array, 3));
+      if (m.attributes.normal) g.setAttribute('normal', new T.Float32BufferAttribute(m.attributes.normal.array, 3));
+      g.setIndex(m.index.array);
+      if (!m.attributes.normal) g.computeVertexNormals();
+      const base = m.color ? rgb(m.color) : fallback;
+      let mat = mk(base);
+      const faces = m.brep_faces || [];
+      if (faces.some(f => f.color)) {
+        const mats = [mk(base)], seen = {};
+        faces.forEach(f => {
+          let mi = 0;
+          if (f.color) { const k = f.color.join(','); if (seen[k] === undefined) { seen[k] = mats.length; mats.push(mk(rgb(f.color))); } mi = seen[k]; }
+          g.addGroup(f.first * 3, (f.last - f.first + 1) * 3, mi);
+        });
+        mat = mats;
+      }
+      const mesh = new T.Mesh(g, mat); mesh.name = m.name || ''; group.add(mesh);
+    });
+    progress('Packing the model…');
+    const glb = await new Promise((ok, bad) => new T.GLTFExporter().parse(group, ok, bad, {binary: true}));
+    group.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.material) [].concat(o.material).forEach(x => x.dispose()); });
+    return new Blob([glb], {type: 'model/gltf-binary'});
+  }
+  async function uploadModel(file, meta, progress){
+    progress('Compressing ' + meta.name + '…');
+    let data = file;
+    if (typeof CompressionStream !== 'undefined') {
+      try {
+        const gz = await new Response(file.stream().pipeThrough(new CompressionStream('gzip'))).blob();
+        if (gz.size < file.size) { data = gz; meta.gz = true; }
+      } catch (e) {}
+    }
+    const b64 = await fileToB64(data);
+    try {
+      const {usage} = await assetsApi.list();
+      if (usage && usage.maxBytes && usage.bytes + b64.length > usage.maxBytes) throw {code: 'quota_or_state'};
+    } catch (e) { if (e && e.code === 'quota_or_state') throw e; }
+    const n = Math.max(1, Math.ceil(b64.length / CHUNK));
+    const parts = [];
+    for (let k = 0; k < n; k++) {
+      progress(n > 1 ? 'Uploading part ' + (k + 1) + ' of ' + n + '…' : 'Uploading ' + meta.name + '…');
+      const res = await assetsApi.upload(new Blob([b64.slice(k * CHUNK, (k + 1) * CHUNK)], {type: 'text/plain'}), {type: 'text/plain'});
+      parts.push(res.id); sessionUploads.push(res.id);
+    }
+    return parts;
+  }
+
+  async function upload(kind, i, file){
+    const p = state.projects[i];
+    const ext = (file.name.split('.').pop() || '').toLowerCase();
+    let blobToSend, type, meta;
+    if (kind === 'schematic') {
+      type = IMG_TYPES[ext];
+      if (!type) { showStatus('Schematics can be PNG, JPG, GIF, WebP, SVG, or PDF.'); return; }
+      blobToSend = file; meta = {type: ext === 'pdf' ? 'pdf' : 'image', name: file.name};
+    } else {
+      if (!['step', 'stp', 'stl', 'obj', 'glb'].includes(ext)) { showStatus('3D models can be STEP, STL, OBJ, or GLB.'); return; }
+      if (file.size > MAX_MODEL) { showStatus('That model is over 200 MB. Simplify it or export at lower detail.'); return; }
+      meta = {format: ext, name: file.name, up: ext === 'glb' ? 'y' : 'z'};
+      type = 'text/plain';
+    }
+    uploading = {kind, id: p.id, text: 'Sending ' + file.name + '…'};
+    render();
+    try {
+      if (kind === 'model') {
+        const prog = txt => { uploading.text = txt; const st = document.getElementById('stage'); if (st) msg(st, 'Uploading', txt); };
+        let src = file;
+        if (ext === 'step' || ext === 'stp') { src = await stepToGlb(file, prog); meta.format = 'glb'; meta.up = 'z'; meta.from = 'step'; }
+        const parts = await uploadModel(src, meta, prog);
+        p.model = Object.assign({id: parts[0], parts}, meta);
+      } else {
+        const res = await assetsApi.upload(blobToSend, {type});
+        sessionUploads.push(res.id);
+        p[kind] = Object.assign({id: res.id}, meta);
+      }
+      uploading = null; render();
+      showStatus('Uploaded. Click Save changes to keep it.');
+    } catch (err) {
+      uploading = null; render();
+      const code = err && err.code;
+      showStatus(code === 'step' ? err.message
+        : code === 'too_large' ? 'That file is too large. Schematics up to 20 MB (SVG 2 MB), models up to 200 MB.'
+        : code === 'unsupported_type' ? 'That file type can’t be stored. Try PNG or PDF for schematics, STL for models.'
+        : code === 'quota_or_state' ? 'Storage for this page is full. Remove an old file and try again.'
+        : code === 'rate_limited' ? 'Too many uploads at once. Wait a moment and try again.'
+        : 'Upload failed. Check your connection and try again.');
+    }
+  }
+
+  /* ---------- Edit plumbing ---------- */
+  function collect(){
+    root.querySelectorAll('[data-k]').forEach(el => {
+      const v = el.textContent.replace(/ /g, ' ').trim();
+      const parts = el.dataset.k.split('.');
+      if (parts[0] === 'p') state.projects[+parts[1]][parts[2]] = v;
+      else if (parts[0] === 'm') state.meta[+parts[1]][parts[2]] = v;
+      else state[parts[0]] = v;
+    });
+    root.querySelectorAll('[data-tags]').forEach(el => {
+      state.projects[+el.dataset.tags].tags = el.value.split(',').map(t => t.trim()).filter(Boolean);
+    });
+    root.querySelectorAll('[data-details]').forEach(el => { state.projects[+el.dataset.details].details = el.value.replace(/\r/g, '').trim(); });
+    root.querySelectorAll('[data-links]').forEach(el => {
+      state.projects[+el.dataset.links].links = el.value.split('\n').map(line => {
+        const bits = line.split('|');
+        const url = bits.pop().trim(), label = bits.join('|').trim();
+        return url ? {label, url} : null;
+      }).filter(Boolean);
+    });
+    root.querySelectorAll('[data-catlabel]').forEach(el => { const v = el.value.trim(); if (v) state.cats[+el.dataset.catlabel].label = v; });
+    const picked = {};
+    root.querySelectorAll('[data-pc]').forEach(el => {
+      const i = +el.dataset.pc; picked[i] = picked[i] || [];
+      if (el.checked) picked[i].push(el.value);
+    });
+    Object.keys(picked).forEach(i => { state.projects[+i].cats = picked[i]; });
+  }
+
+  function showStatus(text){
+    const s = document.getElementById('status');
+    if (s) { s.textContent = text; s.hidden = false; }
+  }
+
+  const RESET = ':root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.4 system-ui,-apple-system,sans-serif}img{max-width:100%}[hidden]{display:none!important}';
+  function buildDocument(){
+    const style = document.getElementById('page-style').textContent;
+    const app = document.getElementById('app').textContent;
+    const json = JSON.stringify(state, null, 2).replace(/</g, '\\u003c');
+    return '<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>' + RESET + '</style></head><body>' +
+      '<title>' + esc(document.title) + '</title>\n' +
+      '<meta name="claude:viewport-fit-sides" content="cover">\n' +
+      '<link rel="preconnect" href="https://fonts.googleapis.com">\n' +
+      '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">\n' +
+      '<style id="page-style">' + style + '</style>\n\n<div id="root"></div>\n\n' +
+      '<script type="application/json" id="state">\n' + json + '\n<\/script>\n\n' +
+      '<script id="app">' + app + '<\/script>\n</body></html>';
+  }
+
+  async function save(){
+    collect();
+    saving = true; render();
+    try {
+      await artifactApi.publish(buildDocument());
+    } catch (err) {
+      saving = false;
+      const code = err && err.code;
+      if (code === 'conflict') { render(); showStatus('A newer version was saved elsewhere. Reloading it now.'); return; }
+      if (['not_writer', 'not_granted', 'not_declared', 'consent_required', 'capability_disabled'].includes(code)) { artifactApi = null; editing = false; render(); return; }
+      render();
+      showStatus(code === 'rate_limited' ? 'Saving too often. Wait a moment and try again.'
+        : code === 'too_large' ? 'The page is too large to save. Shorten some text and try again.'
+        : 'Couldn’t save. Check your connection and try again.');
+    }
+  }
+
+  root.addEventListener('click', e => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    if (b.dataset.f) { filter = b.dataset.f; try { localStorage.setItem('filter', filter); } catch (err) {} render(); return; }
+    if (b.dataset.vtab) { if (editing) collect(); viewTab = b.dataset.vtab; zoom = 1; render(); return; }
+    if (b.dataset.zoom !== undefined) {
+      const d = +b.dataset.zoom;
+      zoom = d === 0 ? 1 : Math.min(4, Math.max(.5, zoom * (d > 0 ? 1.5 : 1 / 1.5)));
+      if (editing) collect(); render(); return;
+    }
+    if (b.id === 'edit') { editing = true; render(); return; }
+    if (b.id === 'cancel') {
+      sessionUploads.splice(0).forEach(id => { try { assetsApi && assetsApi.delete(id).catch(() => {}); } catch (err) {} });
+      state = load(); editing = false; render(); return;
+    }
+    if (b.id === 'save') { save(); return; }
+    if (b.dataset.remove) { collect(); state.projects[+b.dataset.i][b.dataset.remove] = null; render(); return; }
+    if (b.id === 'add-project') {
+      collect();
+      const ids = new Set(state.projects.map(p => p.id));
+      let n = state.projects.length + 1; while (ids.has('x' + n)) n++;
+      state.projects.push({id: 'x' + n, cats: filter !== 'all' ? [filter] : [], ref: 'X' + n, sys: 'Context', title: 'New project', desc: 'Describe what you built, what it does, and your part in it.', tags: ['Tag'], details: '', links: [], schematic: null, model: null});
+      render(); return;
+    }
+    if (b.id === 'add-tab') {
+      collect();
+      state.cats.push({id: 't' + Date.now().toString(36), label: 'New tab'});
+      render();
+      const inputs = root.querySelectorAll('[data-catlabel]'); const last = inputs[inputs.length - 1];
+      if (last) { last.focus(); last.select(); }
+      return;
+    }
+    if (b.dataset.catdel !== undefined) {
+      collect();
+      const [gone] = state.cats.splice(+b.dataset.catdel, 1);
+      state.projects.forEach(p => { p.cats = p.cats.filter(c => c !== gone.id); });
+      render(); return;
+    }
+    if (b.dataset.del !== undefined) { collect(); state.projects.splice(+b.dataset.del, 1); render(); return; }
+    if (b.dataset.move !== undefined) {
+      collect();
+      const i = +b.dataset.move, j = i + (+b.dataset.dir);
+      if (j >= 0 && j < state.projects.length) [state.projects[i], state.projects[j]] = [state.projects[j], state.projects[i]];
+      render(); return;
+    }
+  });
+  root.addEventListener('change', e => {
+    const inp = e.target.closest('[data-upload]');
+    if (!inp || !inp.files || !inp.files[0]) return;
+    collect();
+    upload(inp.dataset.upload, +inp.dataset.i, inp.files[0]);
+  });
+  root.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.matches('[data-k]') && !/desc|lede/.test(e.target.dataset.k)) { e.preventDefault(); e.target.blur(); }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && currentId() && !e.target.closest('input,textarea,[contenteditable="true"]')) location.hash = '';
+  });
+  root.addEventListener('paste', e => {
+    if (!e.target.closest('[contenteditable]')) return;
+    e.preventDefault();
+    document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text/plain'));
+  });
+  window.addEventListener('hashchange', () => {
+    if (editing) collect();
+    zoom = 1; render(); window.scrollTo(0, 0);
+  });
+
+  render();
+
+  (async () => {
+    if (!window.claude || !window.claude.use) return;
+    try {
+      const [api, user, assets] = await Promise.all([window.claude.use('artifact'), window.claude.use('user'), window.claude.use('assets')]);
+      if (!api) return;
+      if (user && typeof user.canEdit === 'function') { const ok = await user.canEdit(); if (ok === false) return; }
+      artifactApi = api; assetsApi = assets || null;
+      if (editing) collect();
+      render();
+    } catch (e) {}
+  })();
+})();
+</script>
+</body></html>
